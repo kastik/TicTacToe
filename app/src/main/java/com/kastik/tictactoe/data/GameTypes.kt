@@ -1,4 +1,4 @@
-package com.kastik.tictactoe.screens
+package com.kastik.tictactoe.data
 
 enum class GameTypes {
     SinglePlayer,MultiPlayer,OnlineMultiPlayer

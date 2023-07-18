@@ -1,10 +1,9 @@
 package com.kastik.tictactoe.screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
@@ -13,16 +12,17 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kastik.tictactoe.data.MyViewModel
+import com.kastik.tictactoe.data.GameDataViewModel
+import com.kastik.tictactoe.data.GameTypes
 
 
 @Composable
-fun PlayScreen(viewModel: MyViewModel){
-    Column() {
-        Row() {
+fun PlayScreen(mode: String?){
+    val viewModel = GameDataViewModel(mode)
+    Column(modifier=Modifier.fillMaxSize()) {
+        Row(modifier=Modifier.fillMaxWidth()) {
             TicTacButton(
                 text =  {(viewModel::getBoardData)(0)},
                 onClick = {(viewModel::updateBoard)(0)}
@@ -36,7 +36,7 @@ fun PlayScreen(viewModel: MyViewModel){
                 onClick = {(viewModel::updateBoard)(2)}
             )
         }
-        Row() {
+        Row(modifier=Modifier.fillMaxWidth()) {
             TicTacButton(
                 text =  {(viewModel::getBoardData)(3)},
                 onClick = {(viewModel::updateBoard)(3)}
@@ -50,7 +50,7 @@ fun PlayScreen(viewModel: MyViewModel){
                 onClick = {(viewModel::updateBoard)(5)}
             )
         }
-        Row() {
+        Row(modifier=Modifier.fillMaxWidth()) {
             TicTacButton(
                 text =  {(viewModel::getBoardData)(6)},
                 onClick = {(viewModel::updateBoard)(6)}
@@ -78,7 +78,10 @@ fun TicTacButton(text: () -> String?, onClick: () -> Unit) {
         shape = MaterialTheme.shapes.extraLarge,
         enabled = text()==null
     ) {
-        Text(text = text().orEmpty())
+        AnimatedVisibility(visible = text()!=null) {
+            Text(text = text().orEmpty())
+        }
+
 
     }
 
@@ -88,5 +91,5 @@ fun TicTacButton(text: () -> String?, onClick: () -> Unit) {
 @Preview
 @Composable
 fun MyPreview(){
-    PlayScreen(viewModel = MyViewModel())
+    PlayScreen(GameTypes.SinglePlayer.name)
 }

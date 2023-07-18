@@ -1,5 +1,5 @@
 package com.kastik.tictactoe.screens
 
-enum class Screens {
+enum class AvailableScreens {
     HomeScreen,SettingsScreen,PlayScreen
 }
