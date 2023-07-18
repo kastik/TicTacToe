@@ -9,8 +9,12 @@ class GameDataViewModel(mode: String?): ViewModel() {
     private val board = mutableStateListOf<String?>(null,null,null,null,null,null,null,null,null,null)
     private var currentPlayer = "X"
     private var playType = mode
+    private var winner: String? = null
 
 
+    fun continuePlaying(): Boolean{
+        return winner==null
+    }
 
 
     fun getBoardData(position: Int): String?{
@@ -53,7 +57,7 @@ class GameDataViewModel(mode: String?): ViewModel() {
 
 
     fun findWinner(playedPossition: Int){
-        var won :String? =  ""
+        var won :String? =  null
 
         when(playedPossition){
             0 -> if (board[0]==board[1] && board[1]==board[2] || board[0]==board[3] && board[3]==board[6] || board[0]==board[4] && board[4]==board[8]){ won=board[0] }
@@ -66,7 +70,7 @@ class GameDataViewModel(mode: String?): ViewModel() {
             7 -> if(board[7]==board[4] && board[4]==board[1] || board[6]==board[7] && board[7]==board[8] ){won=board[7]}
             8 -> if (board[8]==board[5] && board[5]==board[2] || board[8]==board[7] && board[7]==board[6] || board[8]==board[4] && board[4]==board[0]){ won=board[8] }
         }
-        Log.d("MyLog","Player ${won.orEmpty()} Won!")
+        winner=won
         }
 
 }

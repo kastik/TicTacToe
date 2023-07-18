@@ -22,6 +22,7 @@ import com.kastik.tictactoe.screens.HomeScreen
 import com.kastik.tictactoe.ui.theme.TicTacToeTheme
 import com.kastik.tictactoe.screens.PlayScreen
 import com.kastik.tictactoe.screens.AvailableScreens
+import com.kastik.tictactoe.screens.SettingsScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -80,7 +81,3 @@ fun Start(){
 
 
 
-@Composable
-fun SettingsScreen(){
-    Text("Hello")
-}

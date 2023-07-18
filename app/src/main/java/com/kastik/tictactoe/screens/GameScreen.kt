@@ -25,43 +25,52 @@ fun PlayScreen(mode: String?){
         Row(modifier=Modifier.fillMaxWidth()) {
             TicTacButton(
                 text =  {(viewModel::getBoardData)(0)},
-                onClick = {(viewModel::updateBoard)(0)}
+                onClick = {(viewModel::updateBoard)(0)},
+                continuePlaying = viewModel::continuePlaying
             )
             TicTacButton(
                 text =  {(viewModel::getBoardData)(1)},
-                onClick = {(viewModel::updateBoard)(1)}
+                onClick = {(viewModel::updateBoard)(1)},
+                continuePlaying = viewModel::continuePlaying
             )
             TicTacButton(
                 text =  {(viewModel::getBoardData)(2)},
-                onClick = {(viewModel::updateBoard)(2)}
+                onClick = {(viewModel::updateBoard)(2)},
+                continuePlaying = viewModel::continuePlaying
             )
         }
         Row(modifier=Modifier.fillMaxWidth()) {
             TicTacButton(
                 text =  {(viewModel::getBoardData)(3)},
-                onClick = {(viewModel::updateBoard)(3)}
+                onClick = {(viewModel::updateBoard)(3)},
+                continuePlaying = viewModel::continuePlaying
             )
             TicTacButton(
                 text =  {(viewModel::getBoardData)(4)},
-                onClick = {(viewModel::updateBoard)(4)}
+                onClick = {(viewModel::updateBoard)(4)},
+                continuePlaying = viewModel::continuePlaying
             )
             TicTacButton(
                 text =  {(viewModel::getBoardData)(5)},
-                onClick = {(viewModel::updateBoard)(5)}
+                onClick = {(viewModel::updateBoard)(5)},
+                continuePlaying = viewModel::continuePlaying
             )
         }
         Row(modifier=Modifier.fillMaxWidth()) {
             TicTacButton(
                 text =  {(viewModel::getBoardData)(6)},
-                onClick = {(viewModel::updateBoard)(6)}
+                onClick = {(viewModel::updateBoard)(6)},
+                continuePlaying = viewModel::continuePlaying
             )
             TicTacButton(
-                    text =  {(viewModel::getBoardData)(7)},
-            onClick = {(viewModel::updateBoard)(7)}
+                text =  {(viewModel::getBoardData)(7)},
+                onClick = {(viewModel::updateBoard)(7)},
+                continuePlaying = viewModel::continuePlaying
             )
             TicTacButton(
-            text =  {(viewModel::getBoardData)(8)},
-            onClick = {(viewModel::updateBoard)(8)}
+                text =  {(viewModel::getBoardData)(8)},
+                onClick = {(viewModel::updateBoard)(8)},
+                continuePlaying = viewModel::continuePlaying
         )
         }
     }
@@ -70,13 +79,13 @@ fun PlayScreen(mode: String?){
 
 
 @Composable
-fun TicTacButton(text: () -> String?, onClick: () -> Unit) {
+fun TicTacButton(text: () -> String?, onClick: () -> Unit, continuePlaying: ()-> Boolean) {
 
     TextButton(
         onClick = onClick,
         border = BorderStroke(5.dp, Color.LightGray),
         shape = MaterialTheme.shapes.extraLarge,
-        enabled = text()==null
+        enabled = (text()==null && continuePlaying())
     ) {
         AnimatedVisibility(visible = text()!=null) {
             Text(text = text().orEmpty())
