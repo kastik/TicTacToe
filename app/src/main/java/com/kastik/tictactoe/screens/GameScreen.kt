@@ -1,61 +1,86 @@
 package com.kastik.tictactoe.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.kastik.tictactoe.data.MyViewModel
-import com.kastik.tictactoe.muButton
 
-@Preview
+
 @Composable
-fun PlayScreen(){
-    val viewModel = MyViewModel()
+fun PlayScreen(viewModel: MyViewModel){
     Column() {
         Row {
-            muButton(
+            TicTacButton(
                 text =  {(viewModel::getBoardData)(0)},
                 onClick = {(viewModel::updateBoard)(0)}
             )
-            muButton(
+            TicTacButton(
                 text =  {(viewModel::getBoardData)(1)},
                 onClick = {(viewModel::updateBoard)(1)}
             )
-            muButton(
+            TicTacButton(
                 text =  {(viewModel::getBoardData)(2)},
                 onClick = {(viewModel::updateBoard)(2)}
             )
         }
         Row {
-            muButton(
+            TicTacButton(
                 text =  {(viewModel::getBoardData)(3)},
                 onClick = {(viewModel::updateBoard)(3)}
             )
-            muButton(
+            TicTacButton(
                 text =  {(viewModel::getBoardData)(4)},
                 onClick = {(viewModel::updateBoard)(4)}
             )
-            muButton(
+            TicTacButton(
                 text =  {(viewModel::getBoardData)(5)},
                 onClick = {(viewModel::updateBoard)(5)}
             )
         }
         Row {
-            muButton(
+            TicTacButton(
                 text =  {(viewModel::getBoardData)(6)},
                 onClick = {(viewModel::updateBoard)(6)}
             )
-            muButton(
+            TicTacButton(
                     text =  {(viewModel::getBoardData)(7)},
             onClick = {(viewModel::updateBoard)(7)}
             )
-            muButton(
+            TicTacButton(
             text =  {(viewModel::getBoardData)(8)},
             onClick = {(viewModel::updateBoard)(8)}
         )
         }
     }
 
+}
+
+
+@Composable
+fun TicTacButton(text: () -> String?, onClick: () -> Unit) {
+
+    TextButton(
+        onClick = onClick,
+        border = BorderStroke(5.dp, Color.LightGray),
+        shape = MaterialTheme.shapes.medium,
+        enabled = text()==null
+    ) {
+        Text(text = text().orEmpty())
+
+    }
+
+
+}
+
+@Preview
+@Composable
+fun MyPreview(){
+    PlayScreen(viewModel = MyViewModel())
 }

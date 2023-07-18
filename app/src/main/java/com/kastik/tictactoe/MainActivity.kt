@@ -20,11 +20,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.kastik.tictactoe.data.MyViewModel
+import com.kastik.tictactoe.screens.GameTypes
 import com.kastik.tictactoe.ui.theme.TicTacToeTheme
 import com.kastik.tictactoe.screens.PlayScreen
 import com.kastik.tictactoe.screens.Screens
@@ -39,10 +42,12 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
+@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Start(){
+    val viewModel = MyViewModel()
+    viewModel.setMode(GameTypes.SinglePlayer)
     val navController = rememberNavController()
     Scaffold(
         topBar = {
@@ -65,7 +70,7 @@ fun Start(){
                 HomeScreen(navController)
             }
             composable(Screens.PlayScreen.name) {
-                PlayScreen()
+                PlayScreen(viewModel)
             }
             composable(Screens.SettingsScreen.name){
                 SettingsScreen()
@@ -93,21 +98,7 @@ fun HomeScreen(navController: NavController){
 
 
 
-@Composable
-fun muButton(text: () -> String?, onClick: () -> Unit) {
 
-        TextButton(
-            onClick = onClick,
-            border = BorderStroke(5.dp, Color.LightGray),
-            shape = MaterialTheme.shapes.medium,
-            enabled = text()==null
-        ) {
-            Text(text = text().orEmpty())
-
-        }
-
-
-}
 
 @Composable
 fun SettingsScreen(){

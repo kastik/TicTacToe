@@ -3,17 +3,15 @@ package com.kastik.tictactoe.data
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import com.kastik.tictactoe.screens.GameTypes
 
 
 class MyViewModel: ViewModel() {
-    private val board = mutableStateListOf<String?>(null,"X","O",null,null,null,"X",null,"O",null)
+    private val board = mutableStateListOf<String?>(null,null,null,null,null,null,null,null,null,null)
+    private var currentPlayer = "X"
+    private var playType = GameTypes.SinglePlayer
 
-    init {
-    }
 
-    fun getBoard(): List<String?>{
-        return board
-    }
 
     fun getBoardData(position: Int): String?{
         return board[position]
@@ -26,9 +24,28 @@ class MyViewModel: ViewModel() {
     }
 
     fun updateBoard(position: Int){
-        board[position] = "X"
-        Log.d("MyLog","Updated possion $position")
-        printArray()
+        if (currentPlayer=="X"){
+            board[position] = "X"
+            currentPlayer="Y"
+            aiPlay()
+        }else{
+            board[position] = "Y"
+            currentPlayer="X"
+        }
+
+
+    }
+
+    private fun aiPlay(){
+        for (i in 1..8){
+            if (getBoardData(i)==null){
+                updateBoard(i)
+                break
+            }
+        }
+    }
+    fun setMode(type: GameTypes){
+        playType=type
     }
 
 }
