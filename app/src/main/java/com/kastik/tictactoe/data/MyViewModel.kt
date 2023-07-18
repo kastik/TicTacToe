@@ -27,12 +27,14 @@ class MyViewModel: ViewModel() {
         if (currentPlayer=="X"){
             board[position] = "X"
             currentPlayer="Y"
-            aiPlay()
+            if (playType==GameTypes.SinglePlayer){
+                aiPlay()
+            }
+
         }else{
             board[position] = "Y"
             currentPlayer="X"
         }
-
 
     }
 

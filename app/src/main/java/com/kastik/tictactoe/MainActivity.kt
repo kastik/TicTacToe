@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -35,19 +36,18 @@ import com.kastik.tictactoe.screens.Screens
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val viewModel = MyViewModel()
         setContent {
             TicTacToeTheme {
-                Start()
+                Start(viewModel)
             }
         }
     }
 }
-@Preview
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Start(){
-    val viewModel = MyViewModel()
-    viewModel.setMode(GameTypes.SinglePlayer)
+fun Start(viewModel: MyViewModel){
     val navController = rememberNavController()
     Scaffold(
         topBar = {
@@ -65,9 +65,11 @@ fun Start(){
         paddingValues ->
         NavHost(navController = navController,
             startDestination = Screens.HomeScreen.name,
-            modifier = Modifier.padding(paddingValues)) {
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()) {
             composable(Screens.HomeScreen.name) {
-                HomeScreen(navController)
+                HomeScreen(navController,viewModel)
             }
             composable(Screens.PlayScreen.name) {
                 PlayScreen(viewModel)
@@ -80,12 +82,18 @@ fun Start(){
 }
 
 @Composable
-fun HomeScreen(navController: NavController){
+fun HomeScreen(navController: NavController,viewModel: MyViewModel){
     Column(){
-        Button(onClick = { navController.navigate(Screens.PlayScreen.name) }) {
+        Button(onClick = {
+            viewModel.setMode(GameTypes.SinglePlayer)
+            navController.navigate(Screens.PlayScreen.name)
+        }) {
             Text(text = "Single Player")
         }
-        Button(onClick = { navController.navigate(Screens.PlayScreen.name) }) {
+        Button(onClick = {
+            viewModel.setMode(GameTypes.MultiPlayer)
+            navController.navigate(Screens.PlayScreen.name)
+        }) {
             Text(text = "On Device MultiPlayer")
         }
         Button(onClick = { navController.navigate(Screens.PlayScreen.name) }) {
