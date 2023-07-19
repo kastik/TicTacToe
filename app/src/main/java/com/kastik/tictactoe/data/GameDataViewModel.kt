@@ -1,7 +1,9 @@
 package com.kastik.tictactoe.data
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 
 
@@ -16,6 +18,10 @@ class GameDataViewModel(mode: String?): ViewModel() {
         return winner==null
     }
 
+    fun getWinner(): String?{
+        return winner
+    }
+
 
     fun getBoardData(position: Int): String?{
         return board[position]
@@ -28,18 +34,22 @@ class GameDataViewModel(mode: String?): ViewModel() {
     }
 
     fun updateBoard(position: Int){
+        printArray()
         if (currentPlayer=="X"){
             board[position] = "X"
-            currentPlayer="Y"
-            if (playType== GameTypes.SinglePlayer.name){
+            findWinner(position)
+            currentPlayer="O"
+            if (playType== GameTypes.SinglePlayer.name && winner==null){
                 aiPlay()
             }
 
+
         }else{
-            board[position] = "Y"
+            board[position] = "O"
             currentPlayer="X"
+            findWinner(position)
         }
-        findWinner(position)
+
 
     }
 
@@ -51,24 +61,21 @@ class GameDataViewModel(mode: String?): ViewModel() {
             }
         }
     }
-    fun setMode(type: GameTypes){
-        playType= GameTypes.SinglePlayer.name
-    }
 
-
-    fun findWinner(playedPossition: Int){
+    private fun findWinner(playedPosition: Int){
         var won :String? =  null
 
-        when(playedPossition){
+        when(playedPosition){
             0 -> if (board[0]==board[1] && board[1]==board[2] || board[0]==board[3] && board[3]==board[6] || board[0]==board[4] && board[4]==board[8]){ won=board[0] }
             1 -> if (board[0]==board[1] && board[1]==board[2] || board[1]==board[4] && board[4]==board[7] ){ won=board[1] }
-            2, -> if (board[2]==board[5] && board[5]==board[8] || board[2]==board[1] && board[1]==board[0] || board[2]==board[4] && board[4]==board[6] ){ won=board[2] }
+            2 -> if (board[2]==board[5] && board[5]==board[8] || board[2]==board[1] && board[1]==board[0] || board[2]==board[4] && board[4]==board[6] ){ won=board[2] }
             3 -> if(board[3]==board[4] && board[4]==board[5] || board[0]==board[3] && board[3]==board[6] ){won=board[3]}
             4 -> if(board[1]==board[4] && board[4]==board[7] || board[2]==board[4] && board[4]==board[6]  || board[0]==board[4] && board[4]==board[8]  || board[3]==board[4] && board[4]==board[5] ){won=board[4]}
             5 -> if(board[2]==board[5] && board[5]==board[8] || board[5]==board[4] && board[4]==board[3] ){won=board[5]}
-            6, -> if (board[0]==board[3] && board[3]==board[6] || board[6]==board[7] && board[7]==board[8] || board[6]==board[4] && board[4]==board[2] ){ won=board[6] }
+            6 -> if (board[0]==board[3] && board[3]==board[6] || board[6]==board[7] && board[7]==board[8] || board[6]==board[4] && board[4]==board[2] ){ won=board[6] }
             7 -> if(board[7]==board[4] && board[4]==board[1] || board[6]==board[7] && board[7]==board[8] ){won=board[7]}
             8 -> if (board[8]==board[5] && board[5]==board[2] || board[8]==board[7] && board[7]==board[6] || board[8]==board[4] && board[4]==board[0]){ won=board[8] }
+            else -> won=null
         }
         winner=won
         }

@@ -15,12 +15,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kastik.tictactoe.screens.HomeScreen
 import com.kastik.tictactoe.ui.theme.TicTacToeTheme
-import com.kastik.tictactoe.screens.PlayScreen
+import com.kastik.tictactoe.screens.GameScreen
 import com.kastik.tictactoe.screens.AvailableScreens
 import com.kastik.tictactoe.screens.SettingsScreen
 
@@ -63,14 +64,20 @@ fun Start(){
             composable(AvailableScreens.HomeScreen.name) {
                 HomeScreen(navController)
             }
-            composable("${AvailableScreens.PlayScreen.name}/{GameType}") { NavBackStackEntry ->
-                PlayScreen(NavBackStackEntry.arguments?.getString("GameType"))
+            composable("${AvailableScreens.GameScreen.name}/{GameType}") { NavBackStackEntry ->
+                GameScreen(NavBackStackEntry.arguments?.getString("GameType"))
             }
             composable(AvailableScreens.SettingsScreen.name){
                 SettingsScreen()
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun MainView() {
+    Start()
 }
 
 
