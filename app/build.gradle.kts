@@ -94,8 +94,6 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
-    implementation(libs.icons)
-    implementation(libs.fonts)
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
