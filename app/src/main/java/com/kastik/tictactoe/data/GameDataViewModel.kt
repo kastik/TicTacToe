@@ -1,10 +1,18 @@
 package com.kastik.tictactoe.data
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class GameDataViewModel(mode: String?): ViewModel() {
@@ -40,7 +48,8 @@ class GameDataViewModel(mode: String?): ViewModel() {
             findWinner(position)
             currentPlayer="O"
             if (playType== GameTypes.SinglePlayer.name && winner==null){
-                aiPlay()
+                val scope = CoroutineScope(Dispatchers.Main)
+                scope.launch {  aiPlay() }
             }
 
 
@@ -53,9 +62,10 @@ class GameDataViewModel(mode: String?): ViewModel() {
 
     }
 
-    private fun aiPlay(){
+    private suspend fun aiPlay(){
         for (i in 0..8){
             if (getBoardData(i)==null){
+                delay(400)
                 updateBoard(i)
                 break
             }

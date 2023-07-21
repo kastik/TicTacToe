@@ -63,8 +63,13 @@ fun HomeScreen(navController: NavController){
 }
 
 
-@Preview
+@Preview(device = "id:pixel_2_xl")
 @Composable
 fun HomePreview(){
+    HomeScreen(navController = rememberNavController())
+}
+@Preview(device = "spec:width=2880dp,height=1440dp,dpi=460")
+@Composable
+fun HomePreviewLand(){
     HomeScreen(navController = rememberNavController())
 }

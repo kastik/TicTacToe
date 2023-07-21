@@ -3,12 +3,16 @@ package com.kastik.tictactoe.screens
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.scaleIn
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -16,7 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.kastik.tictactoe.data.GameDataViewModel
 
 
@@ -40,6 +46,7 @@ fun RowScope.NewTextButton(
         onClick = onClick,
         shape = RectangleShape,
         enabled = (text() == null && continuePlaying()),
+        border = BorderStroke(5.dp, Color.LightGray),
         modifier = Modifier
             .weight(1f)
             .fillMaxSize()
@@ -62,7 +69,8 @@ fun RowScope.NewTextButton(
 fun NewTicTacBoard(viewModel: GameDataViewModel){
     Column(
         Modifier
-            .fillMaxSize(1f)
+            .fillMaxWidth()
+            .fillMaxHeight(.88f)
             .aspectRatio(1f)) {
         NewTicTacRow(viewModel, intArrayOf(0,1,2))
         NewTicTacRow(viewModel, intArrayOf(3,4,5))
@@ -102,6 +110,6 @@ fun ColumnScope.NewTicTacRow(
 @Composable
 fun test(){
     MaterialTheme {
-        NewTicTacBoard(GameDataViewModel(""))
+        GameScreen("")
     }
 }
