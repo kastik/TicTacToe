@@ -6,15 +6,12 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kastik.tictactoe.utils.MinMaxImplementation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
 
 
@@ -133,7 +130,7 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
                         when (gameDifficulty.value) {
                             GameModes.Easy.name -> sequentialMove()
                             GameModes.Medium.name -> randomMove()
-                            GameModes.Hard.name -> randomMove() //TODO Some Algorithm
+                            GameModes.Hard.name -> minMax()
                         }
                     }
                 }
@@ -213,7 +210,6 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
             6 -> if (board[0]==board[3] && board[3]==board[6] || board[6]==board[7] && board[7]==board[8] || board[6]==board[4] && board[4]==board[2] ){ winner.value=board[6]; gameEnded.value =true }
             7 -> if(board[7]==board[4] && board[4]==board[1] || board[6]==board[7] && board[7]==board[8] ){winner.value=board[7]; gameEnded.value =true}
             8 -> if (board[8]==board[5] && board[5]==board[2] || board[8]==board[7] && board[7]==board[6] || board[8]==board[4] && board[4]==board[0]){ winner.value=board[8]; gameEnded.value =true }
-            else -> winner.value=null
         }
     }
 
@@ -255,6 +251,11 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
                 break
             }
         }
+    }
+
+    private suspend fun minMax(){
+        delay(400)
+        updateBoard2(MinMaxImplementation(mainPlayerSymbol.value,AiPlayerSymbol.value).findBestMove(board.toList()))
     }
 
 }
