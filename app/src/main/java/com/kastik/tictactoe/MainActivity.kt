@@ -1,5 +1,6 @@
 package com.kastik.tictactoe
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,20 +17,31 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.kastik.tictactoe.data.DatastoreRepo
 import com.kastik.tictactoe.screens.HomeScreen
 import com.kastik.tictactoe.ui.theme.TicTacToeTheme
 import com.kastik.tictactoe.screens.GameScreen
 import com.kastik.tictactoe.screens.AvailableScreens
 import com.kastik.tictactoe.screens.SettingsScreen
 
+
+
+
 class MainActivity : ComponentActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
         setContent {
             TicTacToeTheme {
                 Start()
