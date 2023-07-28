@@ -24,14 +24,14 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.ads.MobileAds
 import com.kastik.tictactoe.data.DatastoreRepo
 import com.kastik.tictactoe.screens.HomeScreen
 import com.kastik.tictactoe.ui.theme.TicTacToeTheme
 import com.kastik.tictactoe.screens.GameScreen
 import com.kastik.tictactoe.screens.AvailableScreens
 import com.kastik.tictactoe.screens.SettingsScreen
-
-
+import com.kastik.tictactoe.screens.Start
 
 
 class MainActivity : ComponentActivity() {
@@ -40,9 +40,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        MobileAds.initialize(this) {}
 
 
-        setContent {
+
+    setContent {
             TicTacToeTheme {
                 Start()
             }
@@ -50,47 +52,15 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Preview
 @Composable
-fun Start(){
-    val navController = rememberNavController()
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {Text(text = "TicTacToe") },
-                actions = {
-                    IconButton(onClick = {navController.navigate(AvailableScreens.SettingsScreen.name)}){
-                        Icon(Icons.Default.Settings,
-                            contentDescription = null,
-                        )
-                    }
-                }
-            )}
-    ){
-        paddingValues ->
-        NavHost(navController = navController,
-            startDestination = AvailableScreens.HomeScreen.name,
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()) {
-            composable(AvailableScreens.HomeScreen.name) {
-                HomeScreen(navController)
-            }
-            composable("${AvailableScreens.GameScreen.name}/{GameType}") { NavBackStackEntry ->
-                GameScreen(NavBackStackEntry.arguments?.getString("GameType"))
-            }
-            composable(AvailableScreens.SettingsScreen.name){
-                SettingsScreen()
-            }
-        }
+fun previewApp(){
+    TicTacToeTheme {
+        Start()
     }
 }
 
-@Preview
-@Composable
-fun MainView() {
-    Start()
-}
+
 
 
 

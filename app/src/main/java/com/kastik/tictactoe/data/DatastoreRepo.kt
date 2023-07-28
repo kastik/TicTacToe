@@ -25,89 +25,36 @@ class DatastoreRepo(private val context: Context) {
     }
 
 
-    suspend fun gameDifficulty(): String {
-        lateinit var gameDifficulty: String
-        context.dataStore.data
-            .map { preferences ->
-                preferences[gameDifficultyPreference] ?: "Medium"
-            }.collect{
-                gameDifficulty = it
-            }
-        return gameDifficulty
-    }
-
-
-    suspend fun playFirst(): Boolean {
-        var playFirst:Boolean = false
-        context.dataStore.data
-            .map { preferences ->
-                preferences[playFirstPreferece] ?: false
-            }.collect{
-                playFirst = it
-            }
-        return playFirst
-    }
-
-
-
-
-    suspend fun playAsX(): Boolean {
-        var playAsX:Boolean = true
-        context.dataStore.data
-            .map { preferences ->
-                preferences[playAsXPreference] ?: true
-            }.collect{
-                playAsX = it
-            }
-        return playAsX
-    }
-
-
-
-
-      fun gameDifficultyFlow(): Flow<String> = context.dataStore.data
-            .map { preferences ->
-                preferences[gameDifficultyPreference] ?: "Medium"
-            }
-
+    fun gameDifficultyFlow(): Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[gameDifficultyPreference] ?: GameModes.Medium.name
+        }
 
 
     fun playFirstFlow(): Flow<Boolean> = context.dataStore.data
         .map { preferences ->
-            preferences[playFirstPreferece]?: false
+            preferences[playFirstPreferece] ?: false
         }
-
-
-
 
     fun playAsXFlow(): Flow<Boolean> = context.dataStore.data
         .map { preferences ->
-            preferences[playAsXPreference]?: true
+            preferences[playAsXPreference] ?: true
         }
-
-
-
-
 
     suspend fun setplayAsX(playAsX: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[playAsXPreference] = playAsX
         }
     }
+
     suspend fun setplayFirst(playFirst: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[playFirstPreferece] = playFirst
         }
     }
-
     suspend fun setGameDifficulty(gameDifficulty: String) {
         context.dataStore.edit { preferences ->
             preferences[gameDifficultyPreference] = gameDifficulty
         }
     }
-
-
-
 }
-
-data class myPrefs(val gameDifficulty: String,val playFirst: Boolean,val playAsX: Boolean)

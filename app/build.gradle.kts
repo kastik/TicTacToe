@@ -86,6 +86,8 @@ dependencies {
 
     implementation(libs.androidx.datastore.preferences)
 
+    implementation(libs.play.services.ads)
+
     implementation(libs.androidx.navigation.compose)
     implementation(libs.ui.tooling.preview)
     implementation(libs.androidx.lifecycle.viewmodel.compose)

@@ -27,7 +27,7 @@ class MinMaxImplementation(val player: String, val opponent:String) {
     }
 
     fun minMax(board: MutableList<String?>, depth: Int, isMaxTurn: Boolean): Int {
-        val score = evaluate(board,0)
+        val score = evaluate(board, 0)
 
         if (score == 10) {
             return score
@@ -49,11 +49,11 @@ class MinMaxImplementation(val player: String, val opponent:String) {
             }
             return best
         } else {
-            var best = -1000
+            var best = 1000 // Change to a large positive value
             for (i in 0..8) {
                 if (board[i] == null) {
                     board[i] = opponent
-                    best = Math.max(best, minMax(board, depth + 1, !isMaxTurn))
+                    best = Math.min(best, minMax(board, depth + 1, !isMaxTurn))
                     board[i] = null
                 }
             }
@@ -61,7 +61,7 @@ class MinMaxImplementation(val player: String, val opponent:String) {
         }
     }
 
-    fun findBestMove(boardList: List<String?>): Int { //TODO Something is broken
+    fun findBestMove(boardList: List<String?>): Int {
         val board = boardList.toMutableList()
         var bestVal = -1000
         var bestMove = -1
@@ -73,10 +73,10 @@ class MinMaxImplementation(val player: String, val opponent:String) {
                 if (moveVal > bestVal) {
                     bestVal = moveVal
                     bestMove = i
-
                 }
             }
         }
         return bestMove
     }
 }
+

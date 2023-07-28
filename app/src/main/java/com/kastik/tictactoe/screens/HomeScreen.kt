@@ -33,7 +33,16 @@ fun HomeScreen(navController: NavController){
                 .fillMaxWidth(0.6f)
                 .fillMaxHeight(0.08f),
             onClick = {
-            navController.navigate("${AvailableScreens.GameScreen}/${GameTypes.SinglePlayer.name}")
+            navController.navigate("${AvailableScreens.GameScreen}/${GameTypes.SinglePlayer.name}"){
+                popUpTo(AvailableScreens.HomeScreen.name) {
+                    saveState = true
+                }
+                // Avoid multiple copies of the same destination when
+                // reselecting the same item
+                launchSingleTop = true
+                // Restore state when reselecting a previously selected item
+                restoreState = true
+            }
             }) {
             Text(text = "Single Player" ,style=MaterialTheme.typography.bodyLarge)
         }
@@ -44,7 +53,16 @@ fun HomeScreen(navController: NavController){
                 .fillMaxWidth(0.6f)
                 .fillMaxHeight(0.08f),
             onClick = {
-            navController.navigate("${AvailableScreens.GameScreen}/${GameTypes.MultiPlayer.name}")
+            navController.navigate("${AvailableScreens.GameScreen}/${GameTypes.MultiPlayer.name}"){
+                popUpTo(AvailableScreens.HomeScreen.name) {
+                    saveState = true
+                }
+                // Avoid multiple copies of the same destination when
+                // reselecting the same item
+                launchSingleTop = true
+                // Restore state when reselecting a previously selected item
+                restoreState = true
+            }
         }) {
             Text(text = "On Device MultiPlayer",style=MaterialTheme.typography.bodyLarge)
         }
@@ -55,7 +73,16 @@ fun HomeScreen(navController: NavController){
                 .fillMaxWidth(0.6f)
                 .fillMaxHeight(0.08f),
             onClick = {
-            navController.navigate("${AvailableScreens.GameScreen}/${GameTypes.OnlineMultiPlayer.name}")
+            navController.navigate("${AvailableScreens.GameScreen}/${GameTypes.OnlineMultiPlayer.name}"){
+                popUpTo(AvailableScreens.HomeScreen.name) {
+                    saveState = true
+                }
+                // Avoid multiple copies of the same destination when
+                // reselecting the same item
+                launchSingleTop = true
+                // Restore state when reselecting a previously selected item
+                restoreState = true
+            }
         }) {
             Text(text = "Online MultiPlayer",style=MaterialTheme.typography.bodyLarge)
         }

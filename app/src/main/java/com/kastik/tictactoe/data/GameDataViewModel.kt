@@ -2,6 +2,7 @@ package com.kastik.tictactoe.data
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -24,7 +25,7 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
     private lateinit var AiPlayerSymbol: MutableState<String>
 
     private lateinit var currentPlayer: MutableState<String>
-    private lateinit var previousPlayerFinished: MutableState<Boolean>
+    private val previousPlayerFinished: MutableState<Boolean> = mutableStateOf(true)
 
     private lateinit var gameDifficulty:MutableState<String>
 
@@ -35,89 +36,42 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
     private lateinit var playAsX: MutableState<Boolean>
 
 
-
-
-
-
-
-
     init {
-        Log.d("MyLog","Init viewModel")
         val getDataJob = viewModelScope.launch(Dispatchers.Main) {
-            Log.d("MyLog","Init coroutine")
-
-
             playAsX = mutableStateOf( datastore.playAsXFlow().first())
             playFirst = mutableStateOf( datastore.playFirstFlow().first())
             gameDifficulty = mutableStateOf( datastore.gameDifficultyFlow().first())
-
             mainPlayerSymbol = mutableStateOf(if (playAsX.value) { "X" } else { "O" })
             AiPlayerSymbol = mutableStateOf(if (playAsX.value) { "O" } else { "X" })
-
-
-
             currentPlayer = mutableStateOf(if (playFirst.value){mainPlayerSymbol.value}else{AiPlayerSymbol.value})
-            previousPlayerFinished = mutableStateOf(playFirst.value)
-
-
-            Log.d("MyLog","Init playAsXSetting ${playAsX.value}")
-            Log.d("MyLog","Init playFirstSetting ${playFirst.value}")
-            Log.d("MyLog","Init gameDifficultySetting ${gameDifficulty.value}")
-
-                /*
-                { playAsXSetting ->
-                    mainPlayerSymbol = mutableStateOf(if (playAsXSetting) { "X" } else { "O" })
-                    AiPlayerSymbol = mutableStateOf(if (playAsXSetting) { "O" } else { "X" })
-                    playAsX = mutableStateOf(playAsXSetting)
-                    Log.d("MyLog","Init playAsXSetting $playAsXSetting")
-                }*/
+            previousPlayerFinished.value = playFirst.value
         }
         viewModelScope.launch {
-            Log.d("MyLog", "Got in launch")
             getDataJob.join()
-            Log.d("MyLog", "Job finished playFirst value = ${playFirst.value}")
                 if (!playFirst.value && playType==GameTypes.SinglePlayer.name) {
-                    Log.d("MyLog", "Got in 3")
                     updateBoard2(Random.nextInt(0, 8))
-
-                }
-        }
-
-
+                } } }
+    fun previousPlayerFinished(): MutableState<Boolean>{
+        return previousPlayerFinished
     }
-
-
     fun checkGameEnd(){
+        var temp = gameEnded.value
         for (i in 0..8){
             if (board[i]==null){
-                gameEnded.value = false
+                temp = false
             }
         }
-        gameEnded.value = true
+        gameEnded.value = temp
     }
-
-
     fun getWinner(): MutableState<String?>{
         return winner
     }
-
     fun gameEnded(): MutableState<Boolean>{
         return gameEnded
     }
-
-
     fun getBoardData(position: Int): String?{
         return board[position]
     }
-
-    private fun printArray(){
-        //for(i in 0..8){
-            //Log.d("MyLog",board[i].toString())
-        //}
-    }
-
-
-
     fun updateBoard2(position: Int){
         if(!gameEnded.value) {
             if (playType == GameTypes.SinglePlayer.name) {
@@ -125,6 +79,7 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
                     previousPlayerFinished.value = false
                     board[position] = currentPlayer.value
                     findWinner(position)
+                    //checkGameEnd()
                     currentPlayer.value = if (currentPlayer.value == "X") { "O" } else { "X" }
                     CoroutineScope(Dispatchers.Default).launch {
                         when (gameDifficulty.value) {
@@ -137,6 +92,7 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
                 else {
                     board[position] = currentPlayer.value
                     findWinner(position)
+                    //checkGameEnd()
                     currentPlayer.value = if (currentPlayer.value == "X") { "O" } else { "X" }
                     previousPlayerFinished.value = true
                 }
@@ -144,61 +100,11 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
             }else{ //Multi Player
                 board[position] = currentPlayer.value
                 findWinner(position)
+                //checkGameEnd()
                 currentPlayer.value = if (currentPlayer.value == "X") { "O" } else { "X" }
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-    fun updateBoard(position: Int){
-        if (mainPlayerSymbol.value=="X"){
-            //playerFinished = false
-            board[position] = "X"
-            findWinner(position)
-            mainPlayerSymbol.value="O"
-            //playerFinished = true
-            if (playType== GameTypes.SinglePlayer.name && winner.value==null){
-                val scope = CoroutineScope(Dispatchers.Main)
-                scope.launch {
-                    if(gameDifficulty.value=="Easy") {
-                        sequentialMove()
-                    }else if (gameDifficulty.value=="Medium"){
-                        randomMove()
-                    }else{ //Hard
-                        //TODO Some kind of algorithm
-                    }
-
-                }
-            }
-
-
-        }else{
-            board[position] = "O"
-            mainPlayerSymbol.value="X"
-            findWinner(position)
-        }
-
-
-    }
-
-
- */
-
     private fun findWinner(playedPosition: Int){
         when(playedPosition){
             0 -> if (board[0]==board[1] && board[1]==board[2] || board[0]==board[3] && board[3]==board[6] || board[0]==board[4] && board[4]==board[8]){ winner.value=board[0]; gameEnded.value =true }
@@ -212,22 +118,15 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
             8 -> if (board[8]==board[5] && board[5]==board[2] || board[8]==board[7] && board[7]==board[6] || board[8]==board[4] && board[4]==board[0]){ winner.value=board[8]; gameEnded.value =true }
         }
     }
-
-
     fun clearGame(){
-        for (i in 0..8){
-            board[i] = null
-        }
+        for (i in 0..8){ board[i] = null }
+        gameEnded.value = false
+        currentPlayer = if (playFirst.value){mainPlayerSymbol}else{ AiPlayerSymbol }
+        previousPlayerFinished.value = playFirst.value
         winner.value=null
-        mainPlayerSymbol.value = if (playAsX.value){
-            "X"
-        }else{
-            "O"
-        }
-
     }
-
-    private fun randomMove(){
+    private suspend fun randomMove(){
+        delay(400)
         val emptyPositions = arrayListOf<Int>()
         for (i in 0..8){
             if(getBoardData(i)==null){
@@ -236,26 +135,19 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
         }
         try {
             updateBoard2(emptyPositions[Random.nextInt(0, emptyPositions.size - 1)])
-        }catch (e: IllegalArgumentException){
-            Log.d("MyLog", "Exception Caught ${e.localizedMessage}")
-        }
-    }
-
-
+        }catch (_: IllegalArgumentException){} }
     private suspend fun sequentialMove(){
+        delay(400)
         for (i in 0..8){
             if (getBoardData(i)==null){
-                delay(400)
                 updateBoard2(i)
                 //playerFinished = true
                 break
             }
         }
     }
-
     private suspend fun minMax(){
         delay(400)
         updateBoard2(MinMaxImplementation(mainPlayerSymbol.value,AiPlayerSymbol.value).findBestMove(board.toList()))
     }
-
 }

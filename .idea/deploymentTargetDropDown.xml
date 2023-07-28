@@ -5,6 +5,9 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="previewApp">
+        <State />
+      </entry>
       <entry key="test">
         <State />
       </entry>
