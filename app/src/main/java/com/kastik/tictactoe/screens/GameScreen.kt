@@ -52,11 +52,11 @@ fun GameScreen(gameMode: String?) {
     val dataStore = DatastoreRepo(LocalContext.current)
     val viewModel = remember { GameDataViewModel(gameMode, dataStore) }
 
-    Row() {
+    Column() {
         NewTicTacBoard(viewModel = viewModel)
-        val alpha: Float by animateFloatAsState(if (!viewModel.getGameEnded().value) 0f else 1f)
         if (viewModel.getGameEnded().value) {
-            Dialog(onDismissRequest = { viewModel.clearGame() }) {
+            Dialog(
+                onDismissRequest = { viewModel.clearGame() }) {
                 Column(
                     modifier = Modifier
                         .background(MaterialTheme.colorScheme.background)
@@ -79,8 +79,9 @@ fun GameScreen(gameMode: String?) {
                 }
             }
         }
-        //AdvertView()
+        AdvertView()
     }
+
     }
 
 

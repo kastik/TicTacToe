@@ -11,17 +11,17 @@ class TicTacToeLogic() {
         for (i in 0..8){
             if (board[i]==null){
                 return false
-            }
-        }
+            } }
         return true
-
     }
 
     fun getBoardData(position: Int): String?{
         return board[position]
     }
     fun setBoardData(position: Int,player: String?){
-        board[position] = player
+        if (position>=0) { // temp solotion
+            board[position] = player
+        }
     }
 
     fun clearBoard(){

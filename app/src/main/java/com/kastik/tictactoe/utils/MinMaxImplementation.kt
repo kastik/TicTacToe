@@ -21,11 +21,10 @@ class MinMaxImplementation(val player: String, val opponent:String) {
         if (board[2] == board[5] && board[5] == board[8]  && board[5]!=null|| board[5] == board[4] && board[4] == board[3] && board[5]!=null) { return if (board[5] == player) { 10 } else { -10 } }
         if (board[0] == board[3] && board[3] == board[6]  && board[6]!=null|| board[6] == board[7] && board[7] == board[8]  && board[6]!=null|| board[6] == board[4] && board[4] == board[2] && board[6]!=null) { return if (board[6] == player) { 10 } else { -10 } }
         if (board[7] == board[4] && board[4] == board[1]  && board[7]!=null|| board[6] == board[7] && board[7] == board[8] && board[7]!=null) { return if (board[7] == player) { 10 } else { -10 } }
-        if (board[8] == board[5] && board[5] == board[2]  && board[7]!=null|| board[8] == board[7] && board[7] == board[6]  && board[7]!=null|| board[8] == board[4] && board[4] == board[0] && board[7]!=null) { return if (board[8] == player) { 10 } else { -10 } }
+        if (board[8] == board[5] && board[5] == board[2]  && board[8]!=null|| board[8] == board[7] && board[7] == board[6]  && board[8]!=null|| board[8] == board[4] && board[4] == board[0] && board[8]!=null) { return if (board[8] == player) { 10 } else { -10 } }
 
         return 0
     }
-
     fun minMax(board: MutableList<String?>, depth: Int, isMaxTurn: Boolean): Int {
         val score = evaluate(board, 0)
 

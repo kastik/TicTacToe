@@ -28,8 +28,8 @@ android {
         applicationId = "com.kastik.tictactoe"
         minSdk = 24
         targetSdk = 34
-        versionCode = 3
-        versionName = "1.0"
+        versionCode = 7
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -99,7 +99,7 @@ dependencies {
 
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
-
+    implementation(libs.billingclient.billing.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

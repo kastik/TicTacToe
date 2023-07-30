@@ -22,6 +22,7 @@ class DatastoreRepo(private val context: Context) {
         val gameDifficultyPreference = stringPreferencesKey("gameDifficulty")
         val playFirstPreferece = booleanPreferencesKey("playFirst")
         val playAsXPreference = booleanPreferencesKey("playAsX")
+        val firstLaunchPreference = booleanPreferencesKey("firstLaunch")
     }
 
 
@@ -40,6 +41,10 @@ class DatastoreRepo(private val context: Context) {
         .map { preferences ->
             preferences[playAsXPreference] ?: true
         }
+    fun firstLaunchFlow(): Flow<Boolean> = context.dataStore.data
+        .map { preferences ->
+            preferences[firstLaunchPreference] ?: true
+        }
 
     suspend fun setplayAsX(playAsX: Boolean) {
         context.dataStore.edit { preferences ->
@@ -55,6 +60,12 @@ class DatastoreRepo(private val context: Context) {
     suspend fun setGameDifficulty(gameDifficulty: String) {
         context.dataStore.edit { preferences ->
             preferences[gameDifficultyPreference] = gameDifficulty
+        }
+    }
+
+    suspend fun setfirstLaunch(firstLaunch: Boolean){
+        context.dataStore.edit { preferences ->
+            preferences[firstLaunchPreference] = firstLaunch
         }
     }
 }
