@@ -1,27 +1,36 @@
 package com.kastik.tictactoe.data
 
 import androidx.compose.runtime.mutableStateListOf
-import com.kastik.tictactoe.utils.MinMaxImplementation
-import kotlinx.coroutines.delay
-import kotlin.random.Random
+import com.kastik.tictactoe.data.algorithms.Algorithms
+import com.kastik.tictactoe.data.algorithms.MinMaxImplementation
+import com.kastik.tictactoe.data.algorithms.RandomMove
+import com.kastik.tictactoe.data.algorithms.SequentialMove
 
-class TicTacToeLogic() {
+class TicTacToeLogic(gameDifficulty: String,mainPlayerSymbol: String,AiPlayerSymbol: String) {
     private val board = mutableStateListOf<String?>(null,null,null,null,null,null,null,null,null)
+    private lateinit var algorithms: Algorithms
+    init {
+        when(gameDifficulty){
+            GameModes.Easy.name -> algorithms = SequentialMove()
+            GameModes.Medium.name -> algorithms = RandomMove()
+            GameModes.Hard.name -> algorithms = MinMaxImplementation(mainPlayerSymbol,AiPlayerSymbol)
+        }
+    }
     fun checkForDraw(): Boolean{
         for (i in 0..8){
             if (board[i]==null){
                 return false
-            } }
+            }
+        }
         return true
+
     }
 
     fun getBoardData(position: Int): String?{
         return board[position]
     }
     fun setBoardData(position: Int,player: String?){
-        if (position>=0) { // temp solotion
-            board[position] = player
-        }
+        board[position] = player
     }
 
     fun clearBoard(){
@@ -47,30 +56,16 @@ class TicTacToeLogic() {
     }
 
 
-
-    fun getMinMaxMove(mainPlayerSymbol: String,AiPlayerSymbol:String): Int{
-        //delay(400)
-        return MinMaxImplementation(mainPlayerSymbol,AiPlayerSymbol).findBestMove(board.toList())
-    }
-
-    fun sequentialMove():Int{
-        //delay(400)
-        for (i in 0..8){
-            if (board[i]==null){
-                return i
-            }
-        }
-        return 0
+    fun getMove(): Int{
+        return algorithms.getMove(board)
     }
 
 
-    fun randomMove(): Int{
-        //delay(400)
-        val emptyPositions = arrayListOf<Int>()
-        for (i in 0..8){
-            if(board[i]==null){
-                emptyPositions.add(i)
-            } }
-        return(emptyPositions[Random.nextInt(0, emptyPositions.size)])
-    }
+
+
+
+
+
+
+
 }

@@ -83,6 +83,7 @@ dependencies {
     implementation(libs.analytics)
     implementation(libs.crashlytics)
     implementation(libs.perf)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 
     implementation(libs.androidx.datastore.preferences)
 

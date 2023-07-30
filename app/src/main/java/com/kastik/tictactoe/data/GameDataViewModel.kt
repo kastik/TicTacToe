@@ -5,10 +5,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
 
 
@@ -29,11 +29,12 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
     private lateinit var playFirst: MutableState<Boolean>
     private lateinit var playAsX: MutableState<Boolean>
 
-    private val ticTacToeLogic = TicTacToeLogic()
+    private lateinit var ticTacToeLogic : TicTacToeLogic
 
 
     init {
-        val getDataJob = viewModelScope.launch(Dispatchers.Main) {
+        runBlocking{
+        //val getDataJob = viewModelScope.launch(Dispatchers.Main) {
             playAsX = mutableStateOf( datastore.playAsXFlow().first())
             playFirst = mutableStateOf( datastore.playFirstFlow().first())
             gameDifficulty = mutableStateOf( datastore.gameDifficultyFlow().first())
@@ -41,12 +42,16 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
             aiPlayerSymbol = mutableStateOf(if (playAsX.value) { "O" } else { "X" })
             currentPlayer = mutableStateOf(if (playFirst.value){mainPlayerSymbol.value}else{aiPlayerSymbol.value})
             previousPlayerFinished.value = playFirst.value
-        }
-        viewModelScope.launch {
-            getDataJob.join()
+            ticTacToeLogic = TicTacToeLogic(gameDifficulty.value,mainPlayerSymbol.value,aiPlayerSymbol.value)
+        //}
+        //viewModelScope.launch {
+            //getDataJob.join()
                 if (!playFirst.value && playType==GameTypes.SinglePlayer.name) {
                     makeAMove(Random.nextInt(0, 8))
-                } } }
+                }
+        //}
+        }
+    }
 
 
     fun getPreviousPlayerFinished(): MutableState<Boolean>{
@@ -80,11 +85,7 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
                     }
                     currentPlayer.value = if (currentPlayer.value == "X") { "O" } else { "X" }
                         //CoroutineScope(Dispatchers.Default).launch {
-                        when (gameDifficulty.value) {
-                            GameModes.Easy.name -> makeAMove(ticTacToeLogic.sequentialMove())
-                            GameModes.Medium.name -> makeAMove(ticTacToeLogic.randomMove())
-                            GameModes.Hard.name -> makeAMove(ticTacToeLogic.getMinMaxMove(mainPlayerSymbol.value,aiPlayerSymbol.value))
-                        }
+                    makeAMove(ticTacToeLogic.getMove())
                     //}
                 }
                 else {
