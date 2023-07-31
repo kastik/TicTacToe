@@ -4,53 +4,40 @@ import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
 
 
 class GameDataViewModel(private val playType: String?, private val datastore: DatastoreRepo): ViewModel() {
 
+    private var mainPlayerSymbol: String
+    private var aiPlayerSymbol: String
 
-    private lateinit var mainPlayerSymbol: MutableState<String>
-    private lateinit var aiPlayerSymbol: MutableState<String>
+    private lateinit var currentPlayer: String
+    private var previousPlayerFinished = mutableStateOf(true)
 
-    private lateinit var currentPlayer: MutableState<String>
-    private val previousPlayerFinished: MutableState<Boolean> = mutableStateOf(true)
+    private var gameDifficulty: String
 
-    private lateinit var gameDifficulty:MutableState<String>
+    private var gameEnded = mutableStateOf(false)
+    private var winner:String?  = null
 
-    private val gameEnded = mutableStateOf(false)
-    private val winner = mutableStateOf<String?>(null)
+    private var playFirst: Boolean
+    private var playAsX: Boolean
 
-    private lateinit var playFirst: MutableState<Boolean>
-    private lateinit var playAsX: MutableState<Boolean>
-
-    private lateinit var ticTacToeLogic : TicTacToeLogic
+    private var ticTacToeLogic : TicTacToeLogic
 
 
     init {
-        runBlocking{
-        //val getDataJob = viewModelScope.launch(Dispatchers.Main) {
-            playAsX = mutableStateOf( datastore.playAsXFlow().first())
-            playFirst = mutableStateOf( datastore.playFirstFlow().first())
-            gameDifficulty = mutableStateOf( datastore.gameDifficultyFlow().first())
-            mainPlayerSymbol = mutableStateOf(if (playAsX.value) { "X" } else { "O" })
-            aiPlayerSymbol = mutableStateOf(if (playAsX.value) { "O" } else { "X" })
-            currentPlayer = mutableStateOf(if (playFirst.value){mainPlayerSymbol.value}else{aiPlayerSymbol.value})
-            previousPlayerFinished.value = playFirst.value
-            ticTacToeLogic = TicTacToeLogic(gameDifficulty.value,mainPlayerSymbol.value,aiPlayerSymbol.value)
-        //}
-        //viewModelScope.launch {
-            //getDataJob.join()
-                if (!playFirst.value && playType==GameTypes.SinglePlayer.name) {
-                    makeAMove(Random.nextInt(0, 8))
-                }
-        //}
+        runBlocking {
+            playAsX = datastore.playAsXFlow().first()
+            playFirst = datastore.playFirstFlow().first()
+            gameDifficulty = datastore.gameDifficultyFlow().first()
         }
+        mainPlayerSymbol = if (playAsX) { "X" } else { "O" }
+        aiPlayerSymbol = if (playAsX) { "O" } else { "X" }
+        ticTacToeLogic = TicTacToeLogic(gameDifficulty,mainPlayerSymbol,aiPlayerSymbol)
+        setDataAndPlay()
     }
 
 
@@ -63,7 +50,7 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
     }
 
 
-    fun getWinner(): MutableState<String?>{
+    fun getWinner(): String?{
         return winner
     }
     fun getGameEnded(): MutableState<Boolean>{
@@ -77,34 +64,35 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
             if (playType == GameTypes.SinglePlayer.name) {
                 if (previousPlayerFinished.value) {
                     previousPlayerFinished.value = false
-                    ticTacToeLogic.setBoardData(position,currentPlayer.value)
+                    ticTacToeLogic.setBoardData(position,currentPlayer)
                     gameEnded.value = ticTacToeLogic.hasWon(position)
-                    if(gameEnded.value) {
-                        winner.value = if(ticTacToeLogic.checkForDraw()){null} else{currentPlayer.value}
-
+                    if(gameEnded.value || ticTacToeLogic.checkForDraw()) {
+                        winner = if(ticTacToeLogic.checkForDraw()){null} else{currentPlayer}
                     }
-                    currentPlayer.value = if (currentPlayer.value == "X") { "O" } else { "X" }
-                        //CoroutineScope(Dispatchers.Default).launch {
-                    makeAMove(ticTacToeLogic.getMove())
-                    //}
+                    currentPlayer = if (currentPlayer == "X") { "O" } else { "X" }
+                    if(ticTacToeLogic.checkForDraw()) {
+                        gameEnded.value = true
+                    }else{
+                        makeAMove(ticTacToeLogic.getMove())
+                    }
                 }
                 else {
-                    ticTacToeLogic.setBoardData(position,currentPlayer.value)
-                    gameEnded.value = ticTacToeLogic.hasWon(position)
+                    ticTacToeLogic.setBoardData(position,currentPlayer)
+                    gameEnded.value = ticTacToeLogic.hasWon(position) || ticTacToeLogic.checkForDraw()
                     if(gameEnded.value) {
-                        winner.value = if (ticTacToeLogic.checkForDraw()){null} else{currentPlayer.value}
+                        winner = if (ticTacToeLogic.checkForDraw()){null} else{currentPlayer}
                     }
-                    currentPlayer.value = if (currentPlayer.value == "X") { "O" } else { "X" }
+                    currentPlayer = if (currentPlayer == "X") { "O" } else { "X" }
                     previousPlayerFinished.value = true
                 }
 
             }else if (playType == GameTypes.MultiPlayer.name) {
-                ticTacToeLogic.setBoardData(position,currentPlayer.value)
+                ticTacToeLogic.setBoardData(position,currentPlayer)
                 gameEnded.value = ticTacToeLogic.hasWon(position)
                 if(gameEnded.value) {
-                    winner.value = if (ticTacToeLogic.checkForDraw()){null}else{currentPlayer.value}
+                    winner = if (ticTacToeLogic.checkForDraw()){null}else{currentPlayer}
                 }
-                currentPlayer.value = if (currentPlayer.value == "X") { "O" } else { "X" }
+                currentPlayer = if (currentPlayer == "X") { "O" } else { "X" }
             }else{ //Online TODO
 
             }
@@ -116,10 +104,15 @@ class GameDataViewModel(private val playType: String?, private val datastore: Da
     fun clearGame(){
         ticTacToeLogic.clearBoard()
         gameEnded.value = false
-        currentPlayer.value = if (playFirst.value){mainPlayerSymbol.value}else{ aiPlayerSymbol.value }
-        previousPlayerFinished.value = playFirst.value
-        winner.value=null
-        if (!playFirst.value && playType==GameTypes.SinglePlayer.name) {
+        winner=null
+        setDataAndPlay()
+
+    }
+
+    private fun setDataAndPlay(){
+        currentPlayer = if (playFirst){mainPlayerSymbol}else{aiPlayerSymbol}
+        previousPlayerFinished.value = playFirst
+        if (!playFirst && playType== GameTypes.SinglePlayer.name) {
             makeAMove(Random.nextInt(0, 8))
         }
     }

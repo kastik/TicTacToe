@@ -1,6 +1,6 @@
-package com.kastik.tictactoe.data.algorithms
+package com.kastik.tictactoe.data.gameMoves
 
-class MinMaxImplementation(val player: String, val opponent:String) : Algorithms() {
+class MinMaxMove(val player: String, val opponent:String) : GameMoves() {
 
 
     private fun movesLeft(board: MutableList<String?>): Boolean {

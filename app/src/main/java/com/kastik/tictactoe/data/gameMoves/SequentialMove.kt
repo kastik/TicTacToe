@@ -1,6 +1,6 @@
-package com.kastik.tictactoe.data.algorithms
+package com.kastik.tictactoe.data.gameMoves
 
-class SequentialMove() : Algorithms() {
+class SequentialMove() : GameMoves() {
     override fun getMove(board: List<String?>): Int {
         for (i in 0..8) {
             if (board[i] == null) {

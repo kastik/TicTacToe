@@ -1,8 +1,8 @@
-package com.kastik.tictactoe.data.algorithms
+package com.kastik.tictactoe.data.gameMoves
 
 import kotlin.random.Random
 
-class RandomMove() : Algorithms() {
+class RandomMove() : GameMoves() {
     override fun getMove(board: List<String?>): Int {
         val emptyPositions = arrayListOf<Int>()
         for (i in 0..8){

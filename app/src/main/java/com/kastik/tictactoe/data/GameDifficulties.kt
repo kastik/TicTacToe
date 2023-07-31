@@ -1,5 +1,5 @@
 package com.kastik.tictactoe.data
 
-enum class GameModes {
+enum class GameDifficulties {
     Easy,Medium,Hard
 }

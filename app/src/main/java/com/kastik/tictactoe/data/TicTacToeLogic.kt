@@ -1,19 +1,20 @@
 package com.kastik.tictactoe.data
 
 import androidx.compose.runtime.mutableStateListOf
-import com.kastik.tictactoe.data.algorithms.Algorithms
-import com.kastik.tictactoe.data.algorithms.MinMaxImplementation
-import com.kastik.tictactoe.data.algorithms.RandomMove
-import com.kastik.tictactoe.data.algorithms.SequentialMove
+import com.kastik.tictactoe.data.gameMoves.MinMaxMove
+import com.kastik.tictactoe.data.gameMoves.GameMoves
+import com.kastik.tictactoe.data.gameMoves.RandomMove
+import com.kastik.tictactoe.data.gameMoves.SequentialMove
 
 class TicTacToeLogic(gameDifficulty: String,mainPlayerSymbol: String,AiPlayerSymbol: String) {
     private val board = mutableStateListOf<String?>(null,null,null,null,null,null,null,null,null)
-    private lateinit var algorithms: Algorithms
+    private lateinit var gameMove: GameMoves
     init {
         when(gameDifficulty){
-            GameModes.Easy.name -> algorithms = SequentialMove()
-            GameModes.Medium.name -> algorithms = RandomMove()
-            GameModes.Hard.name -> algorithms = MinMaxImplementation(mainPlayerSymbol,AiPlayerSymbol)
+            GameDifficulties.Easy.name -> gameMove = SequentialMove()
+            GameDifficulties.Medium.name -> gameMove = RandomMove()
+            GameDifficulties.Hard.name -> gameMove = MinMaxMove(mainPlayerSymbol,AiPlayerSymbol)
+
         }
     }
     fun checkForDraw(): Boolean{
@@ -50,22 +51,11 @@ class TicTacToeLogic(gameDifficulty: String,mainPlayerSymbol: String,AiPlayerSym
             6 -> if (board[0]==board[3] && board[3]==board[6] || board[6]==board[7] && board[7]==board[8] || board[6]==board[4] && board[4]==board[2] ){ return true }
             7 -> if(board[7]==board[4] && board[4]==board[1] || board[6]==board[7] && board[7]==board[8] ){return true}
             8 -> if (board[8]==board[5] && board[5]==board[2] || board[8]==board[7] && board[7]==board[6] || board[8]==board[4] && board[4]==board[0]){ return true }
-            else -> return !checkForDraw()
         }
         return false
     }
 
-
     fun getMove(): Int{
-        return algorithms.getMove(board)
+        return gameMove.getMove(board)
     }
-
-
-
-
-
-
-
-
-
 }
