@@ -1,15 +1,22 @@
 package com.kastik.tictactoe.data
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.kastik.tictactoe.data.gameMoves.MinMaxMove
 import com.kastik.tictactoe.data.gameMoves.GameMoves
 import com.kastik.tictactoe.data.gameMoves.RandomMove
 import com.kastik.tictactoe.data.gameMoves.SequentialMove
 
-class TicTacToeLogic(gameDifficulty: String,mainPlayerSymbol: String,AiPlayerSymbol: String) {
-    private val board = mutableStateListOf<String?>(null,null,null,null,null,null,null,null,null)
+class TicTacToeLogic(gameDifficulty: String,mainPlayerSymbol: String,AiPlayerSymbol: String,val rows: Int,val columns: Int) {
+    private val _board = mutableStateListOf<String?>(null,null,null,null,null,null,null,null,null)
+    private var board = mutableStateListOf<MutableList<String?>>()
     private lateinit var gameMove: GameMoves
     init {
+        for (i in 0..columns){
+            board.add(arrayOfNulls<String?>(rows).toMutableList())
+        }
+
         when(gameDifficulty){
             GameDifficulties.Easy.name -> gameMove = SequentialMove()
             GameDifficulties.Medium.name -> gameMove = RandomMove()
@@ -18,30 +25,34 @@ class TicTacToeLogic(gameDifficulty: String,mainPlayerSymbol: String,AiPlayerSym
         }
     }
     fun checkForDraw(): Boolean{
-        for (i in 0..8){
-            if (board[i]==null){
-                return false
+        for (i in 0..columns){
+            for(j in 0..rows) {
+                if (board[i][j] == null) {
+                    return false
+                }
             }
         }
         return true
 
     }
 
-    fun getBoardData(position: Int): String?{
-        return board[position]
+    fun getBoardData(possition: List<Int>): String?{
+        return board[possition[0]][possition[1]]
     }
-    fun setBoardData(position: Int,player: String?){
-        board[position] = player
+    fun setBoardData(possition: List<Int>,player: String?){
+        board[possition[0]][possition[1]] = player
     }
 
     fun clearBoard(){
-        for (i in 0..8){
-            board[i] = null
+        for (i in 0..columns){
+            for (j in 0..rows) {
+                board[i][j] = null
+            }
         }
     }
 
-    fun hasWon(playedPosition: Int):Boolean{
-        when(playedPosition){
+    fun hasWon(possition: List<Int>):Boolean{
+        when(0){
             0 -> if (board[0]==board[1] && board[1]==board[2] || board[0]==board[3] && board[3]==board[6] || board[0]==board[4] && board[4]==board[8]){ return true }
             1 -> if (board[0]==board[1] && board[1]==board[2] || board[1]==board[4] && board[4]==board[7] ){ return true }
             2 -> if (board[2]==board[5] && board[5]==board[8] || board[2]==board[1] && board[1]==board[0] || board[2]==board[4] && board[4]==board[6] ){ return true }
@@ -55,7 +66,7 @@ class TicTacToeLogic(gameDifficulty: String,mainPlayerSymbol: String,AiPlayerSym
         return false
     }
 
-    fun getMove(): Int{
-        return gameMove.getMove(board)
+    fun getMove(): List<Int>{
+        return gameMove.getMove(board.toMutableList())
     }
 }

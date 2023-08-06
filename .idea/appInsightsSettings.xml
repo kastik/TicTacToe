@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AppInsightsSettings">
-    <option name="selectedTabId" value="Android Vitals" />
+    <option name="selectedTabId" value="Firebase Crashlytics" />
     <option name="tabSettings">
       <map>
         <entry key="Android Vitals">
@@ -28,8 +28,8 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.kastik.tictactoe" />
-                  <option name="mobileSdkAppId" value="1:695973728839:android:467ca33378a3e03c085762" />
+                  <option name="appId" value="com.kastik.tictactoe.debug" />
+                  <option name="mobileSdkAppId" value="1:695973728839:android:9928507f8aa9d49b085762" />
                   <option name="projectId" value="tictactoe-66ae1" />
                   <option name="projectNumber" value="695973728839" />
                 </ConnectionSetting>

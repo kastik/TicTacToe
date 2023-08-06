@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -63,7 +64,7 @@ fun GameScreen(gameMode: String?) {
     val viewModel = remember { GameDataViewModel(gameMode, dataStore) }
 
     Column() {
-        TicTacToeBoard(viewModel = viewModel)
+        TicTacBoard(viewModel = viewModel)
         if (viewModel.getGameEnded().value) {
             Dialog(
                 onDismissRequest = { viewModel.clearGame() }) {
@@ -99,7 +100,8 @@ fun RowScope.TicTacToeButton(
     text: () -> String?,
     onClick: () -> Unit,
     gamedEnded: () -> MutableState<Boolean>,
-    previousPlayerFinished: () -> MutableState<Boolean>
+    previousPlayerFinished: () -> MutableState<Boolean>,
+    modifier: Modifier
 ){
     TextButton(
         onClick = onClick,
@@ -109,7 +111,7 @@ fun RowScope.TicTacToeButton(
         border = BorderStroke(5.dp, Color.LightGray),
         modifier = Modifier
             .weight(1f)
-            .fillMaxSize()
+            .fillMaxSize().then(modifier)
     )
     {
         AnimatedVisibility(visible = text() != null,enter = scaleIn()) {
@@ -125,6 +127,7 @@ fun RowScope.TicTacToeButton(
     }
 }
 
+/*
 @Composable
 fun TicTacToeBoard(viewModel: GameDataViewModel){
     Column(
@@ -140,7 +143,9 @@ fun TicTacToeBoard(viewModel: GameDataViewModel){
     }
 }
 
+ */
 
+/*
 @Composable
 fun ColumnScope.TicTacToeRow(
     viewModel: GameDataViewModel,
@@ -170,6 +175,7 @@ fun ColumnScope.TicTacToeRow(
         )
     }
 }
+ */
 
 @Composable
 fun AdvertView(modifier: Modifier = Modifier) {
@@ -217,34 +223,46 @@ fun TicTacBoard(viewModel: GameDataViewModel){
         mutableListOf("X", "O", "X", "X")
     )
 
-    Row {
+    Column {
         for (i in 0..tictactoes.size - 1) {
-            Column {
+            Row {
                 for (j in 0..tictactoes[0].size - 1) {
                     if ( i>0 && j > 0 ) { // Ola ektos ton terma aristeron kai terma dexion stilon
-                        TextButton(
-                            onClick = { /*TODO*/ },
+                        TicTacToeButton(
+                            text = { (viewModel::getBoardData)(listOf(i,j)) },
+                            onClick = { (viewModel::makeAMove)(listOf(i,j)) },
+                            gamedEnded = viewModel::getGameEnded,
+                            previousPlayerFinished = viewModel::getPreviousPlayerFinished,
                             modifier = Modifier.bottomRightBorder(5.dp, Color.LightGray)
-                        ) { Text(text = tictactoes[i][j]) }
+                        )
                     } else {
                         if ( i == 0 && j==0) { // To pano aristera mono
-                            TextButton(
-                                onClick = { /*TODO*/ },
+                            TicTacToeButton(
+                                text = { (viewModel::getBoardData)(listOf(i,j)) },
+                                onClick = { (viewModel::makeAMove)(listOf(i,j)) },
+                                gamedEnded = viewModel::getGameEnded,
+                                previousPlayerFinished = viewModel::getPreviousPlayerFinished,
                                 modifier = Modifier.myBorder(5.dp, Color.LightGray)
-                            ) { Text(text = tictactoes[i][j]) }
+                            )
                         }
                         else {
                             if (j==0 && i>0) { //Ola ta pano aristera
-                                TextButton(
-                                    onClick = { /*TODO*/ },
+                                TicTacToeButton(
+                                    text = { (viewModel::getBoardData)(listOf(i,j)) },
+                                    onClick = { (viewModel::makeAMove)(listOf(i,j)) },
+                                    gamedEnded = viewModel::getGameEnded,
+                                    previousPlayerFinished = viewModel::getPreviousPlayerFinished,
                                     modifier = Modifier.topRightBottomBorder(5.dp, Color.LightGray)
-                                ) { Text(text = tictactoes[i][j]) }
+                                )
                             }
                             else { // Ola ta aristera
-                                TextButton(
-                                    onClick = { /*TODO*/ },
+                                TicTacToeButton(
+                                    text = { (viewModel::getBoardData)(listOf(i,j)) },
+                                    onClick = { (viewModel::makeAMove)(listOf(i,j)) },
+                                    gamedEnded = viewModel::getGameEnded,
+                                    previousPlayerFinished = viewModel::getPreviousPlayerFinished,
                                     modifier = Modifier.leftBottomRightBorder(5.dp, Color.LightGray)
-                                ) { Text(text = tictactoes[i][j]) }
+                                )
                             }
 
                         }

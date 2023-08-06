@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +21,20 @@ class DatastoreRepo(private val context: Context) {
         val playFirstPreferece = booleanPreferencesKey("playFirst")
         val playAsXPreference = booleanPreferencesKey("playAsX")
         val firstLaunchPreference = booleanPreferencesKey("firstLaunch")
+        val rowsPreferences = intPreferencesKey("rowsPreferences")
+        val columnsPreferences = intPreferencesKey("columnsPreferences")
     }
+
+    fun rowsFlow(): Flow<Int> = context.dataStore.data
+        .map { preferences ->
+            preferences[rowsPreferences] ?: 3
+        }
+
+    fun columnsFlow(): Flow<Int> = context.dataStore.data
+        .map { preferences ->
+            preferences[columnsPreferences] ?: 3
+        }
+
 
 
     fun gameDifficultyFlow(): Flow<String> = context.dataStore.data
@@ -42,6 +56,22 @@ class DatastoreRepo(private val context: Context) {
         .map { preferences ->
             preferences[firstLaunchPreference] ?: true
         }
+
+
+    suspend fun setRows(rows: Int){
+        context.dataStore.edit { preferences ->
+            preferences[rowsPreferences] = rows
+        }
+    }
+
+
+    suspend fun setColumns(columns: Int){
+        context.dataStore.edit { preferences ->
+            preferences[columnsPreferences] = columns
+        }
+    }
+
+
 
     suspend fun setplayAsX(playAsX: Boolean) {
         context.dataStore.edit { preferences ->
